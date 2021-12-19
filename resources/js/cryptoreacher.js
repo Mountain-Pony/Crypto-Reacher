@@ -47,50 +47,55 @@ function execute() {
     const endDateUnix = dateToUnix(endDate);
     const url = createURL(crypto, fiat, startDateUnix, endDateUnix);
 
-    $.getJSON(url, function(data) {
-        // getJSON result in data variable
+    $.getJSON(url)
+        .done(function(data) {
+            // getJSON result in data variable
 
-        /* The longest bearish trend */
-        const midnightPrices = getMidnight(data.prices);
-        const longestBear = getLongestBearishTrend(midnightPrices);
+            /* The longest bearish trend */
+            const midnightPrices = getMidnight(data.prices);
+            const longestBear = getLongestBearishTrend(midnightPrices);
 
-        /* The highest trading volume */
-        const midnightVolumes = getMidnight(data.total_volumes);
-        const results = getHighestValueAndDate(midnightVolumes);
-        const highestVolumeDate = new Date(results[0]).toLocaleDateString();
-        const highestVolume = formatSum("en-EN", fiat, results[1]);
+            /* The highest trading volume */
+            const midnightVolumes = getMidnight(data.total_volumes);
+            const results = getHighestValueAndDate(midnightVolumes);
+            const highestVolumeDate = new Date(results[0]).toLocaleDateString();
+            const highestVolume = formatSum("en-EN", fiat, results[1]);
 
-        /* The best days for buying and selling */
-        const isDescending = checkDescending(midnightPrices);
-        if (isDescending == true) {
+            /* The best days for buying and selling */
+            const isDescending = checkDescending(midnightPrices);
+            if (isDescending == true) {
+                document.getElementById("bestDayToBuy").innerHTML =
+                    "The price only decreases in the given date range. " +
+                    "It is recommended to not buy or sell on any of these dates.";
+                return;
+            }
+
+            const resultsHighest = getHighestValueAndDate(midnightPrices);
+            const bestDayToSell = new Date(resultsHighest[0]).toLocaleDateString();
+
+            const resultsLowest = getLowestValueAndDate(midnightPrices);
+            const bestDayToBuy = new Date(resultsLowest[0]).toLocaleDateString();
+
+            /* Display results */
+            document.getElementById("longestBear").innerHTML = longestBear + " days.";
+            if (longestBear == 1)
+                document.getElementById("longestBear").innerHTML = longestBear + " day.";
+
+            document.getElementById("highestVolumeDate").innerHTML =
+                highestVolumeDate + " is the date with the highest trading volume.";
+            document.getElementById("highestVolume").innerHTML =
+                highestVolume + " is the volume on that date.";
+
             document.getElementById("bestDayToBuy").innerHTML =
-                "The price only decreases in the given date range. " +
-                "It is recommended to not buy or sell on any of these dates.";
-            return;
-        }
+                bestDayToBuy + " is the best day to buy " + crypto + ".";
 
-        const resultsHighest = getHighestValueAndDate(midnightPrices);
-        const bestDayToSell = new Date(resultsHighest[0]).toLocaleDateString();
-
-        const resultsLowest = getLowestValueAndDate(midnightPrices);
-        const bestDayToBuy = new Date(resultsLowest[0]).toLocaleDateString();
-
-        /* Display results */
-        document.getElementById("longestBear").innerHTML = longestBear + " days.";
-        if (longestBear == 1)
-            document.getElementById("longestBear").innerHTML = longestBear + " day.";
-
-        document.getElementById("highestVolumeDate").innerHTML =
-            highestVolumeDate + " is the date with the highest trading volume.";
-        document.getElementById("highestVolume").innerHTML =
-            highestVolume + " is the volume on that date.";
-
-        document.getElementById("bestDayToBuy").innerHTML =
-            bestDayToBuy + " is the best day to buy " + crypto + ".";
-
-        document.getElementById("bestDayToSell").innerHTML =
-            bestDayToSell + " is the best day to sell " + crypto + ".";
-    });
+            document.getElementById("bestDayToSell").innerHTML =
+                bestDayToSell + " is the best day to sell " + crypto + ".";
+        })
+        .fail(function(jqxhr, textStatus, error) {
+            const err = "CoinGecko data request failed: " + textStatus + ", " + error;
+            document.getElementById("executeError").innerHTML = err;
+        });
 }
 
 /**
@@ -360,8 +365,8 @@ function checkUserInput(startDate, endDate) {
 /**
  * Creates options for crypto <select> element.
  */
- // eslint-disable-next-line no-unused-vars
- function createOptions() {
+// eslint-disable-next-line no-unused-vars
+function createOptions() {
     const cryptos = ["bitcoin"];
     const selectCrypto = document.getElementById("crypto");
 
