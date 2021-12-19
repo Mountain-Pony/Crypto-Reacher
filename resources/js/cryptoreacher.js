@@ -54,41 +54,36 @@ function execute() {
             /* The longest bearish trend */
             const midnightPrices = getMidnight(data.prices);
             const longestBear = getLongestBearishTrend(midnightPrices);
+            document.getElementById("longestBear").innerHTML = longestBear + " days.";
+            if (longestBear == 1) {
+                document.getElementById("longestBear").innerHTML = longestBear + " day.";
+            }
 
             /* The highest trading volume */
             const midnightVolumes = getMidnight(data.total_volumes);
             const results = getHighestValueAndDate(midnightVolumes);
             const highestVolumeDate = new Date(results[0]).toLocaleDateString();
             const highestVolume = formatSum("en-EN", fiat, results[1]);
+            document.getElementById("highestVolumeDate").innerHTML =
+                highestVolumeDate + " is the date with the highest trading volume.";
+            document.getElementById("highestVolume").innerHTML =
+                highestVolume + " is the volume on that date.";
 
             /* The best days for buying and selling */
             const isDescending = checkDescending(midnightPrices);
             if (isDescending == true) {
                 document.getElementById("bestDayToBuy").innerHTML =
                     "The price only decreases in the given date range. " +
-                    "It is recommended to not buy or sell on any of these dates.";
+                    "It is not recommended to buy or sell on any of these dates.";
                 return;
             }
-
-            const resultsHighest = getHighestValueAndDate(midnightPrices);
-            const bestDayToSell = new Date(resultsHighest[0]).toLocaleDateString();
-
             const resultsLowest = getLowestValueAndDate(midnightPrices);
             const bestDayToBuy = new Date(resultsLowest[0]).toLocaleDateString();
-
-            /* Display results */
-            document.getElementById("longestBear").innerHTML = longestBear + " days.";
-            if (longestBear == 1)
-                document.getElementById("longestBear").innerHTML = longestBear + " day.";
-
-            document.getElementById("highestVolumeDate").innerHTML =
-                highestVolumeDate + " is the date with the highest trading volume.";
-            document.getElementById("highestVolume").innerHTML =
-                highestVolume + " is the volume on that date.";
-
             document.getElementById("bestDayToBuy").innerHTML =
                 bestDayToBuy + " is the best day to buy " + crypto + ".";
 
+            const resultsHighest = getHighestValueAndDate(midnightPrices);
+            const bestDayToSell = new Date(resultsHighest[0]).toLocaleDateString();
             document.getElementById("bestDayToSell").innerHTML =
                 bestDayToSell + " is the best day to sell " + crypto + ".";
         })
@@ -322,7 +317,6 @@ function checkUserInput(startDate, endDate) {
         document.getElementById(endErrorID).innerHTML = future;
         return false;
     }
-
     if (isNaN(startDate)) {
         document.getElementById(startID).style.borderColor = color;
         document.getElementById(startErrorID).innerHTML = proper;
@@ -333,7 +327,6 @@ function checkUserInput(startDate, endDate) {
         document.getElementById(endErrorID).innerHTML = proper;
         return false;
     }
-
     if (startDate > now) {
         document.getElementById(startID).style.borderColor = color;
         document.getElementById(startErrorID).innerHTML = future;
@@ -344,7 +337,6 @@ function checkUserInput(startDate, endDate) {
         document.getElementById(endErrorID).innerHTML = future;
         return false;
     }
-
     if (isNaN(startDate) && endDate > now) {
         document.getElementById(startID).style.borderColor = color;
         document.getElementById(endID).style.borderColor = color;
