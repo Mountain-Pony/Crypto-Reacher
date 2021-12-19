@@ -1,0 +1,19 @@
+.container {
+    margin-top: 2%;
+    margin-left: 2%;
+    width: fit-content;
+}
+
+.resultRow {
+    margin-top: 2%;
+}
+
+.execute {
+    width: 100px;
+    text-align: center;
+}
+
+table td {
+    text-align: left;        
+    vertical-align: middle;    
+}

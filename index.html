@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="resources/css/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <title>Crypto Reacher</title>
+</head>
+
+<body onload="createOptions()">
+    <form enctype="application/x-www-form-urlencoded">
+        <div class="container">
+            <h1>Crypto Reacher</h1>
+            <h3><a href="https://www.coingecko.com/en/api">Powered by CoinGecko</a></h3>
+            <p>Choose your dates:</p>
+            <table>
+                <tr>
+                    <td>Start date:</td>
+                    <td><input type="date" id="startDate"></td>
+                    <td>
+                        <div id="startDateError" class="outputElement"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>End date:</td>
+                    <td><input type="date" id="endDate"></td>
+                    <td>
+                        <div id="endDateError" class="outputElement"></div>
+                    </td>
+                </tr>
+            </table>
+            <br>
+            <table>
+                <tr>
+                    <td><label for="crypto">Cryptocurrency:</label></td>
+                    <td><select name="crypto" id="crypto"></select></td>
+                </tr>
+                <tr>
+                    <td>Fiat currency:</td>
+                    <td>Euro</td>
+                </tr>
+            </table>
+            <br>
+            <table>
+                <tr>
+                    <td><button type="button" class="execute" onclick="execute()">Execute</button></td>
+                </tr>
+            </table>
+        </div>
+    </form>
+    <div class="container">
+        <h3>The longest downward trend</h3>
+        <table>
+            <tr>
+                <td>
+                    <div id="longestBear" class="outputElement"></div>
+                </td>
+            </tr>
+        </table>
+        <h3>The highest trading volume</h3>
+        <table>
+            <tr>
+                <td>
+                    <div id="highestVolumeDate" class="outputElement"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div id="highestVolume" class="outputElement resultRow"></div>
+                </td>
+            </tr>
+        </table>
+        <h3>The best days for buying and selling cryptocurrency</h3>
+        <table>
+            <tr>
+                <td>
+                    <div id="bestDayToBuy" class="outputElement"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div id="bestDayToSell" class="outputElement resultRow"></div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+<script src="resources/js/cryptoreacher.js"></script>
+
+</html>
