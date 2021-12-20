@@ -65,9 +65,9 @@ function execute() {
             const highestVolumeDate = new Date(results[0]).toLocaleDateString();
             const highestVolume = formatSum("en-EN", fiat, results[1]);
             document.getElementById("highestVolumeDate").innerHTML =
-                highestVolumeDate + " is the date with the highest trading volume.";
+                highestVolumeDate;
             document.getElementById("highestVolume").innerHTML =
-                highestVolume + " is the volume on that date.";
+                highestVolume;
 
             /* The best days for buying and selling */
             const isDescending = checkDescending(midnightPrices);
