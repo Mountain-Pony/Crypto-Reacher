@@ -17,11 +17,21 @@ changed in this version of Crypto Reacher.<br />
 Finally, click 'Execute' to run the program.<br />
 
 ## Files
+Javascript<br />
+| File                                  | Description                   |
+| ------------------------------------- | ----------------------------- |
+| resources/js/cryptoreacher.js         | main code                     |
+| resources/test/cryptoreacher.test.js  | test code                     |
 
-| File                                  | Description   |
-| ------------------------------------- | ------------- |
-| index.html                            | Main page     |
-| tests.html                            | Test page     |
-| resources/css/style.css               | Style         |
-| resources/js/cryptoreacher.js         | Main code     |
-| resources/test/cryptoreacher.test.js  | Test code     |
+HTML<br />
+| File                                  | Description                   |
+| ------------------------------------- | ----------------------------- |
+| index.html                            | main page                     |
+| tests.html                            | test page                     |
+
+Other<br />
+| File                                  | Description                   |
+| ------------------------------------- | ----------------------------- |
+| resources/css/style.css               | style                         |
+| readme.md                             | readme                        |
+| \*.json                               | config / metadata information |
