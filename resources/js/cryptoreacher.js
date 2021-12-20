@@ -34,8 +34,8 @@
 function execute() {
     clearHTMLElements("outputElement");
 
-    const startDate = getDate("startDate");
-    const endDate = getDate("endDate");
+    const startDate = getUsersDate("startDate");
+    const endDate = getUsersDate("endDate");
     endDate.setHours(endDate.getHours() + 1); // Add one hour to end date.
     const crypto = getCurrency("crypto");
     const fiat = "eur";
@@ -61,8 +61,8 @@ function execute() {
 
             /* The highest trading volume */
             const midnightVolumes = getMidnight(data.total_volumes);
-            const results = getHighestValueAndDate(midnightVolumes);
-            const highestVolumeDate = new Date(results[0]).toLocaleDateString();
+            const results = getHighestValueAndDate(midnightVolumes);            
+            const highestVolumeDate = formatDate(new Date(results[0]));
             const highestVolume = formatSum("en-EN", fiat, results[1]);
             document.getElementById("highestVolumeDate").innerHTML =
                 highestVolumeDate;
@@ -78,12 +78,12 @@ function execute() {
                 return;
             }
             const resultsLowest = getLowestValueAndDate(midnightPrices);
-            const bestDayToBuy = new Date(resultsLowest[0]).toLocaleDateString();
+            const bestDayToBuy = formatDate(new Date(resultsLowest[0]));
             document.getElementById("bestDayToBuy").innerHTML =
                 bestDayToBuy + " is the best day to buy " + crypto + ".";
 
             const resultsHighest = getHighestValueAndDate(midnightPrices);
-            const bestDayToSell = new Date(resultsHighest[0]).toLocaleDateString();
+            const bestDayToSell = formatDate(new Date(resultsHighest[0]));
             document.getElementById("bestDayToSell").innerHTML =
                 bestDayToSell + " is the best day to sell " + crypto + ".";
         })
@@ -107,7 +107,7 @@ function dateToUnix(date) {
  * @param {string} id ID of the field from which the data is fetched (either startDate or endDate).
  * @returns User input.
  */
-function getDate(id) {
+function getUsersDate(id) {
     const date = new Date(document.getElementById(id).value);
     return date;
 }
@@ -161,8 +161,8 @@ function getMidnight(a) {
     for (let i = count - 1; i >= 1; i--) {
         let time = new Date(a[i][0]);
         let previousTime = new Date(a[i - 1][0]);
-        let day = time.getDate();
-        let previousDay = previousTime.getDate();
+        let day = time.getUTCDate();
+        let previousDay = previousTime.getUTCDate();
 
         if (day == previousDay) {
             a.splice(i, 1);
@@ -270,6 +270,20 @@ function formatSum(locale, currency, sum) {
 }
 
 /**
+ * Converts the given Date object to string and
+ * formats it to show 2-digit months and days.
+ * @param {date} date Given date.
+ * @returns Given date as formatted string.
+ */
+function formatDate(date) {
+    return date.toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+    });
+}
+
+/**
  * Clears all HTML elements that belong to given class.
  * Clears borders of date input elements in case they
  * were lit by an error.
@@ -278,8 +292,8 @@ function formatSum(locale, currency, sum) {
 function clearHTMLElements(c) {
     document.getElementById("startDate").style.removeProperty("border");
     document.getElementById("endDate").style.removeProperty("border");
-
     const elements = document.getElementsByClassName(c);
+
     for (let i = 0; i < elements.length; i++) {
         let element = elements[i];
         element.innerHTML = "";
