@@ -47,48 +47,58 @@ function execute() {
     const endDateUnix = dateToUnix(endDate);
     const url = createURL(crypto, fiat, startDateUnix, endDateUnix);
 
-    $.getJSON(url)
-        .done(function(data) {
-            // getJSON result in data variable
+    fetch(url)
+        .then(function(response) {
+                const respStatus = response.status;
+                if (respStatus !== 200) {
+                    const errStatus = "CoinGecko data request failed. Status Code: " + response.status;
+                    document.getElementById("executeError").innerHTML = errStatus;
+                    return;
+                }
+                response.json().then(function(data) {
+                        // fetched json in data variable
 
-            /* The longest bearish trend */
-            const midnightPrices = getMidnight(data.prices);
-            const longestBear = getLongestBearishTrend(midnightPrices);
-            document.getElementById("longestBear").innerHTML = longestBear + " days.";
-            if (longestBear == 1) {
-                document.getElementById("longestBear").innerHTML = longestBear + " day.";
+                        /* The longest bearish trend */
+                        const midnightPrices = getMidnight(data.prices);
+                        const longestBear = getLongestBearishTrend(midnightPrices);
+                        document.getElementById("longestBear").innerHTML = longestBear + " days.";
+
+                        if (longestBear == 1) {
+                            document.getElementById("longestBear").innerHTML = longestBear + " day.";
+                        }
+
+                        /* The highest trading volume */
+                        const midnightVolumes = getMidnight(data.total_volumes);
+                        const results = getHighestValueAndDate(midnightVolumes);
+                        const highestVolumeDate = formatDate(results[0]);
+                        const highestVolume = formatSum("en-EN", fiat, results[1]);
+                        document.getElementById("highestVolumeDate").innerHTML = highestVolumeDate;
+                        document.getElementById("highestVolume").innerHTML = highestVolume;
+
+                        /* The best days for buying and selling */
+                        const isDescending = checkDescending(midnightPrices);
+
+                        if (isDescending == true) {
+                            document.getElementById("bestDayToBuy").innerHTML = 
+                            "The price only decreases in the given date range. " + 
+                            "It is not recommended to buy or sell on any of these dates.";
+                            return;
+                        }
+
+                        const resultsLowest = getLowestValueAndDate(midnightPrices);
+                        const bestDayToBuy = formatDate(resultsLowest[0]);
+                        document.getElementById("bestDayToBuy").innerHTML = 
+                        bestDayToBuy + " is the best day to buy " + crypto + ".";
+
+                        const resultsHighest = getHighestValueAndDate(midnightPrices);
+                        const bestDayToSell = formatDate(resultsHighest[0]);
+                        document.getElementById("bestDayToSell").innerHTML = 
+                        bestDayToSell + " is the best day to sell " + crypto + ".";
+                    }
+                );
             }
-
-            /* The highest trading volume */
-            const midnightVolumes = getMidnight(data.total_volumes);
-            const results = getHighestValueAndDate(midnightVolumes);
-            const highestVolumeDate = formatDate(results[0]);
-            const highestVolume = formatSum("en-EN", fiat, results[1]);
-            document.getElementById("highestVolumeDate").innerHTML =
-                highestVolumeDate;
-            document.getElementById("highestVolume").innerHTML =
-                highestVolume;
-
-            /* The best days for buying and selling */
-            const isDescending = checkDescending(midnightPrices);
-            if (isDescending == true) {
-                document.getElementById("bestDayToBuy").innerHTML =
-                    "The price only decreases in the given date range. " +
-                    "It is not recommended to buy or sell on any of these dates.";
-                return;
-            }
-            const resultsLowest = getLowestValueAndDate(midnightPrices);
-            const bestDayToBuy = formatDate(resultsLowest[0]);
-            document.getElementById("bestDayToBuy").innerHTML =
-                bestDayToBuy + " is the best day to buy " + crypto + ".";
-
-            const resultsHighest = getHighestValueAndDate(midnightPrices);
-            const bestDayToSell = formatDate(resultsHighest[0]);
-            document.getElementById("bestDayToSell").innerHTML =
-                bestDayToSell + " is the best day to sell " + crypto + ".";
-        })
-        .fail(function(jqxhr, textStatus, error) {
-            const err = "CoinGecko data request failed: " + textStatus + ", " + error;
+        ).catch(function(error) {
+            const err = "CoinGecko data request failed. Error: " + error;
             document.getElementById("executeError").innerHTML = err;
         });
 }
@@ -133,15 +143,7 @@ function getCurrency(id) {
  * @returns Request URL.
  */
 function createURL(crypto, fiat, startDateUnix, endDateUnix) {
-    const url =
-        "https://api.coingecko.com/api/v3/coins/" +
-        crypto +
-        "/market_chart/range?vs_currency=" +
-        fiat +
-        "&from=" +
-        startDateUnix +
-        "&to=" +
-        endDateUnix;
+    const url = "https://api.coingecko.com/api/v3/coins/" + crypto + "/market_chart/range?vs_currency=" + fiat + "&from=" + startDateUnix + "&to=" + endDateUnix;
     return url;
 }
 
@@ -169,6 +171,7 @@ function getMidnight(a) {
             a.splice(i, 1);
         }
     }
+
     return a;
 }
 
@@ -193,6 +196,7 @@ function getLongestBearishTrend(a) {
         if (temp > longestBear) longestBear = temp;
         if (nextPrice >= price) temp = 0;
     }
+
     return longestBear;
 }
 
@@ -210,12 +214,16 @@ function getHighestValueAndDate(a) {
     for (let i = 0; i < a.length; i++) {
         let time = a[i][0];
         let value = a[i][1];
+
         if (value > highest) {
             date = time;
             highest = value;
         }
     }
-    const results = [date, highest];
+
+    const results = [date,
+        highest
+    ];
     return results;
 }
 
@@ -232,12 +240,16 @@ function getLowestValueAndDate(a) {
     for (let i = 0; i < a.length; i++) {
         let time = a[i][0];
         let value = a[i][1];
+
         if (value < lowest) {
             date = time;
             lowest = value;
         }
     }
-    const results = [date, lowest];
+
+    const results = [date,
+        lowest
+    ];
     return results;
 }
 
@@ -252,6 +264,7 @@ function checkDescending(a) {
         let nextValue = a[i + 1][1];
         if (value <= nextValue) return false;
     }
+
     return true;
 }
 
@@ -264,9 +277,11 @@ function checkDescending(a) {
  */
 function formatSum(locale, currency, sum) {
     const formatter = new Intl.NumberFormat(locale, {
-        style: "currency",
-        currency: currency,
-    });
+            style: "currency",
+            currency: currency,
+        }
+
+    );
     return formatter.format(sum);
 }
 
@@ -321,6 +336,7 @@ function checkUserInput(startDate, endDate) {
         document.getElementById(endErrorID).innerHTML = proper;
         return false;
     }
+
     if (startDate > now && endDate > now) {
         document.getElementById(startID).style.borderColor = color;
         document.getElementById(endID).style.borderColor = color;
@@ -328,26 +344,31 @@ function checkUserInput(startDate, endDate) {
         document.getElementById(endErrorID).innerHTML = future;
         return false;
     }
+
     if (isNaN(startDate)) {
         document.getElementById(startID).style.borderColor = color;
         document.getElementById(startErrorID).innerHTML = proper;
         return false;
     }
+
     if (isNaN(endDate)) {
         document.getElementById(endID).style.borderColor = color;
         document.getElementById(endErrorID).innerHTML = proper;
         return false;
     }
+
     if (startDate > now) {
         document.getElementById(startID).style.borderColor = color;
         document.getElementById(startErrorID).innerHTML = future;
         return false;
     }
+
     if (endDate > now) {
         document.getElementById(endID).style.borderColor = color;
         document.getElementById(endErrorID).innerHTML = future;
         return false;
     }
+
     if (isNaN(startDate) && endDate > now) {
         document.getElementById(startID).style.borderColor = color;
         document.getElementById(endID).style.borderColor = color;
@@ -355,6 +376,7 @@ function checkUserInput(startDate, endDate) {
         document.getElementById(endErrorID).innerHTML = future;
         return false;
     }
+
     if (isNaN(endDate) && startDate > now) {
         document.getElementById(startID).style.borderColor = color;
         document.getElementById(endID).style.borderColor = color;
@@ -362,6 +384,7 @@ function checkUserInput(startDate, endDate) {
         document.getElementById(endErrorID).innerHTML = future;
         return false;
     }
+
     return true;
 }
 
@@ -380,6 +403,7 @@ function createOptions() {
         option.innerHTML = capitalizeFirstLetter(crypto);
         selectCrypto.appendChild(option);
     }
+
     const firstCryptoOption = cryptos[0];
     firstCryptoOption.selected = true;
 }
