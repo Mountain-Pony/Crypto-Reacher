@@ -61,8 +61,8 @@ function execute() {
 
             /* The highest trading volume */
             const midnightVolumes = getMidnight(data.total_volumes);
-            const results = getHighestValueAndDate(midnightVolumes);            
-            const highestVolumeDate = formatDate(new Date(results[0]));
+            const results = getHighestValueAndDate(midnightVolumes);
+            const highestVolumeDate = formatDate(results[0]);
             const highestVolume = formatSum("en-EN", fiat, results[1]);
             document.getElementById("highestVolumeDate").innerHTML =
                 highestVolumeDate;
@@ -78,12 +78,12 @@ function execute() {
                 return;
             }
             const resultsLowest = getLowestValueAndDate(midnightPrices);
-            const bestDayToBuy = formatDate(new Date(resultsLowest[0]));
+            const bestDayToBuy = formatDate(resultsLowest[0]);
             document.getElementById("bestDayToBuy").innerHTML =
                 bestDayToBuy + " is the best day to buy " + crypto + ".";
 
             const resultsHighest = getHighestValueAndDate(midnightPrices);
-            const bestDayToSell = formatDate(new Date(resultsHighest[0]));
+            const bestDayToSell = formatDate(resultsHighest[0]);
             document.getElementById("bestDayToSell").innerHTML =
                 bestDayToSell + " is the best day to sell " + crypto + ".";
         })
@@ -94,15 +94,6 @@ function execute() {
 }
 
 /**
- * Converts the given date to unix timestamp.
- * @param {date} date Given date.
- * @returns Given date in unix format.
- */
-function dateToUnix(date) {
-    return Math.floor(date / 1000);
-}
-
-/**
  * Gets the date from user input.
  * @param {string} id ID of the field from which the data is fetched (either startDate or endDate).
  * @returns User input.
@@ -110,6 +101,16 @@ function dateToUnix(date) {
 function getUsersDate(id) {
     const date = new Date(document.getElementById(id).value);
     return date;
+}
+
+/**
+ * Converts the given date to unix timestamp.
+ * @param {date} date Given date.
+ * @returns Given date in unix format.
+ */
+function dateToUnix(date) {
+    const unixDate = date.valueOf();
+    return unixDate / 1000;
 }
 
 /**
@@ -270,17 +271,13 @@ function formatSum(locale, currency, sum) {
 }
 
 /**
- * Converts the given Date object to string and
- * formats it to show 2-digit months and days.
- * @param {date} date Given date.
- * @returns Given date as formatted string.
+ * Converts given unix timestamp to ISO string.
+ * @param {unix timestamp} unix Given date.
+ * @returns Unix timestamp as formatted ISO string.
  */
-function formatDate(date) {
-    return date.toLocaleDateString(undefined, {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit"
-    });
+function formatDate(unix) {
+    const date = new Date(unix).toISOString().substring(0, 10).replaceAll("-", "/");
+    return date;
 }
 
 /**
