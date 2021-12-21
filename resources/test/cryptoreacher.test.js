@@ -269,7 +269,7 @@ describe("Test getMidnight", function() {
         expect(testMidnight.length).to.equal(7);
         for (let i = 0; i < testMidnight.length; i++) {
             let date = new Date(testMidnight[i][0]);
-            let hour = date.getHours();
+            let hour = date.getUTCHours();
             expect(hour).to.equal(0);
         }
 
@@ -278,10 +278,10 @@ describe("Test getMidnight", function() {
         for (let i = 0; i < testMidnight.length - 1; i++) {
             let date = new Date(testMidnight[i][0]);
             let nextDate = new Date(testMidnight[i+1][0]);
-            let day = date.getDate();
-            let nextDay = nextDate.getDate();
-            let hour = date.getHours();
-            let nextHour = nextDate.getHours();
+            let day = date.getUTCDate();
+            let nextDay = nextDate.getUTCDate();
+            let hour = date.getUTCHours();
+            let nextHour = nextDate.getUTCHours();
             
             expect(day).to.not.equal(nextDay);
             expect(hour).to.equal(0);
@@ -295,10 +295,10 @@ describe("Test getMidnight", function() {
         for (let i = 0; i < testMidnight.length - 1; i++) {
             let date = new Date(testMidnight[i][0]);
             let nextDate = new Date(testMidnight[i+1][0]);
-            let day = date.getDate();
-            let nextDay = nextDate.getDate();
-            let hour = date.getHours();
-            let nextHour = nextDate.getHours();
+            let day = date.getUTCDate();
+            let nextDay = nextDate.getUTCDate();
+            let hour = date.getUTCHours();
+            let nextHour = nextDate.getUTCHours();
             
             expect(day).to.not.equal(nextDay);
             expect(hour).to.equal(0);
@@ -312,10 +312,10 @@ describe("Test getMidnight", function() {
         for (let i = 0; i < testMidnight.length - 1; i++) {
             let date = new Date(testMidnight[i][0]);
             let nextDate = new Date(testMidnight[i+1][0]);
-            let day = date.getDate();
-            let nextDay = nextDate.getDate();
-            let hour = date.getHours();
-            let nextHour = nextDate.getHours();
+            let day = date.getUTCDate();
+            let nextDay = nextDate.getUTCDate();
+            let hour = date.getUTCHours();
+            let nextHour = nextDate.getUTCHours();
             
             expect(day).to.not.equal(nextDay);
             expect(hour).to.equal(0);
