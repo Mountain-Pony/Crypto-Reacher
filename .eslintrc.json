@@ -2,7 +2,6 @@
     "env": {
         "browser": true,
         "es2021": true,
-        "jquery": true,
         "mocha": true
     },
     "extends": "eslint:recommended",
