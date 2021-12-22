@@ -3,6 +3,9 @@
  * within a given date range.
  */
 
+ // eslint-disable-next-line no-undef
+ const DateTime = luxon.DateTime;
+
 /**
  * This function executes the program when the 'Execute' button is clicked 
  * in index.html.
@@ -35,17 +38,14 @@ function execute() {
     clearHTMLElements("outputElement");
 
     const startDate = getUsersDate("startDate");
-    const endDate = getUsersDate("endDate");
-    endDate.setHours(endDate.getHours() + 1); // Add one hour to end date.
-    const crypto = getCurrency("crypto");
-    const fiat = "eur";
-
+    const endDate = getUsersDate("endDate");    
     const isCorrect = checkUserInput(startDate, endDate);
+
     if (isCorrect == false) return;
 
-    const startDateUnix = dateToUnix(startDate);
-    const endDateUnix = dateToUnix(endDate);
-    const url = createURL(crypto, fiat, startDateUnix, endDateUnix);
+    const crypto = getCurrency("crypto");
+    const fiat = "eur";      
+    const url = createURL(crypto, fiat, startDate, endDate);
 
     fetch(url)
         .then(function(response) {
@@ -56,7 +56,7 @@ function execute() {
                 return;
             }
             response.json().then(function(data) {
-                // fetched json in data variable
+                // fetch json in data variable
 
                 /* The longest bearish trend */
                 const midnightPrices = getMidnight(data.prices);
@@ -102,23 +102,23 @@ function execute() {
 }
 
 /**
- * Gets the date from user input.
- * @param {string} id ID of the field from which the data is fetched (either startDate or endDate).
- * @returns User input.
+ * Gets the date from user input, adds one hour to end date.
+ * Converts users date to unix timestamp (seconds).
+ * @param {string} id ID of the field from which the data is fetched.
+ * @returns User input as unix timestamp(seconds).
  */
-function getUsersDate(id) {
-    const date = new Date(document.getElementById(id).value);
-    return date;
-}
+function getUsersDate(id) {    
+    const input = document.getElementById(id).value;
+    const timeUnits = input.split("-").map(Number);
+    const year = timeUnits[0]; const month = timeUnits[1]; const day = timeUnits[2];
+    const date = DateTime.utc(year, month, day, 0, 0, 0, 0);
 
-/**
- * Converts the given date to unix timestamp.
- * @param {date} date Given date.
- * @returns Given date in unix format.
- */
-function dateToUnix(date) {
-    const unixDate = date.valueOf();
-    return unixDate / 1000;
+    if (id === "endDate") {
+        const endDate = date.plus({hours: 1}); // Add one hour to end date
+        return endDate.toUTC().toSeconds();
+    }
+    
+    return date.toUTC().toSeconds();
 }
 
 /**
@@ -154,18 +154,20 @@ function createURL(crypto, fiat, startDateUnix, endDateUnix) {
  * This function assumes that the first item in the array is the first
  * midnight timestamp of the start date.
  * @param {array} a Given array.
- * @returns Array that contains one timestamp for each day that is closest to
- * midnight and the value which is paired with each midnight timestamp,
+ * @returns Array that contains one timestamp (milliseconds) that is closest to midnight 
+ * for each day and the value which is paired with each midnight timestamp,
  * such as crypto price or traded volume.
+ * 
+ * Array structure: a[[timestamp(ms), pair]]
  */
 function getMidnight(a) {
     const count = Object.keys(a).length;
 
     for (let i = count - 1; i >= 1; i--) {
-        let time = new Date(a[i][0]);
-        let previousTime = new Date(a[i - 1][0]);
-        let day = time.getUTCDate();
-        let previousDay = previousTime.getUTCDate();
+        let time = DateTime.fromMillis(a[i][0]).toUTC();
+        let previousTime = DateTime.fromMillis(a[i - 1][0]).toUTC();
+        let day = time.day;
+        let previousDay = previousTime.day;
 
         if (day == previousDay) {
             a.splice(i, 1);
@@ -265,7 +267,7 @@ function checkDescending(a) {
 }
 
 /**
- * Formats the given sum of money to a more readable form.
+ * Formats the given sum of money to more readable form.
  * @param {string} locale Language and region settings.
  * @param {string} currency Given currency.
  * @param {number} sum Given sum.
@@ -276,18 +278,18 @@ function formatSum(locale, currency, sum) {
             style: "currency",
             currency: currency,
         }
-
     );
     return formatter.format(sum);
 }
 
 /**
- * Converts given unix timestamp to ISO string.
+ * Converts given unix timestamp (that is in milliseconds)
+ * to UTC time string in locale format.
  * @param {unix timestamp} unix Given date.
  * @returns Unix timestamp as formatted ISO string.
  */
 function formatDate(unix) {
-    const date = new Date(unix).toISOString().substring(0, 10).replaceAll("-", "/");
+    const date = DateTime.fromMillis(unix).toUTC().toLocaleString();
     return date;
 }
 
@@ -316,7 +318,7 @@ function clearHTMLElements(c) {
  * @param {date} endDate End date.
  */
 function checkUserInput(startDate, endDate) {
-    const now = Date.now();
+    const now = DateTime.utc();
     const startID = "startDate";
     const startErrorID = "startDateError";
     const endID = "endDate";
@@ -325,7 +327,14 @@ function checkUserInput(startDate, endDate) {
     const future = "Can't search the future.";
     const color = "red";
 
-    if (isNaN(startDate) && isNaN(endDate)) {
+    if (startDate.isValid === false || endDate.isValid === false) {
+        document.getElementById(startID).style.borderColor = color;
+        document.getElementById(endID).style.borderColor = color;
+        document.getElementById(startErrorID).innerHTML = proper;
+        document.getElementById(endErrorID).innerHTML = proper;
+    }
+
+    if (startDate < 0 && endDate < 0) {
         document.getElementById(startID).style.borderColor = color;
         document.getElementById(endID).style.borderColor = color;
         document.getElementById(startErrorID).innerHTML = proper;
@@ -341,13 +350,13 @@ function checkUserInput(startDate, endDate) {
         return false;
     }
 
-    if (isNaN(startDate)) {
+    if (startDate < 0) {
         document.getElementById(startID).style.borderColor = color;
         document.getElementById(startErrorID).innerHTML = proper;
         return false;
     }
 
-    if (isNaN(endDate)) {
+    if (endDate < 0 ) {
         document.getElementById(endID).style.borderColor = color;
         document.getElementById(endErrorID).innerHTML = proper;
         return false;
@@ -365,7 +374,7 @@ function checkUserInput(startDate, endDate) {
         return false;
     }
 
-    if (isNaN(startDate) && endDate > now) {
+    if (startDate < 0 && endDate > now) {
         document.getElementById(startID).style.borderColor = color;
         document.getElementById(endID).style.borderColor = color;
         document.getElementById(startErrorID).innerHTML = proper;
@@ -373,7 +382,7 @@ function checkUserInput(startDate, endDate) {
         return false;
     }
 
-    if (isNaN(endDate) && startDate > now) {
+    if (endDate < 0 && startDate > now) {
         document.getElementById(startID).style.borderColor = color;
         document.getElementById(endID).style.borderColor = color;
         document.getElementById(startErrorID).innerHTML = future;
