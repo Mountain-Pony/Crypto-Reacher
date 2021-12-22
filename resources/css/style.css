@@ -1,3 +1,7 @@
+* {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
 .container {
     margin-top: 2%;
     margin-left: 2%;
@@ -5,8 +9,13 @@
     width: fit-content;
 }
 
+.titleRow {
+    font-weight: bold;
+    padding-bottom: 10px;
+}
+
 .resultRow {
-    margin-top: 2%;
+    padding-top: 10px;
 }
 
 .execute {
@@ -17,5 +26,5 @@
 
 table td {
     text-align: left;        
-    vertical-align: middle;    
+    vertical-align: middle;
 }
