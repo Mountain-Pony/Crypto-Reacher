@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 let expect = chai.expect;
 
-let array1 = [
+const array1 = [
     [1111, 1],
     [2222, 2],
     [3333, 3],
@@ -10,8 +10,7 @@ let array1 = [
     [6666, 6],
     [7777, 7]
 ];
-
-let array2 = [
+const array2 = [
     [1111, 5000.12342],
     [2222, 6],
     [3333, 5],
@@ -20,8 +19,7 @@ let array2 = [
     [6666, 2],
     [7777, 1]
 ];
-
-let array3 = [
+const array3 = [
     [1111, 213123.123676],
     [2222, 6],
     [3333, 5],
@@ -30,8 +28,7 @@ let array3 = [
     [6666, 2],
     [7777, 2]
 ];
-
-let array4 = [
+const array4 = [
     [1111, 700.916],
     [2222, 700.916],
     [3333, 512],
@@ -40,8 +37,7 @@ let array4 = [
     [6666, 2.51],
     [7777, 1.9]
 ];
-
-let array5 = [
+const array5 = [
     [1111, 700.916],
     [2222, 700.915],
     [3333, 512],
@@ -50,8 +46,7 @@ let array5 = [
     [6666, 2.51],
     [7777, 1.9]
 ];
-
-let array6 = [
+const array6 = [
     [1111, 700.920],
     [2222, 700.919],
     [3333, 700.918],
@@ -60,15 +55,13 @@ let array6 = [
     [6666, 700.915],
     [7777, 700.910]
 ];
-
-let array7 = [
+const array7 = [
     [1111, 100],
     [2222, 100],
     [3333, 100],
     [4444, 100]
 ];
-
-let array8 = [
+const array8 = [
     [1111, 100],
     [2222, 100],
     [3333, 100.1],
@@ -138,7 +131,7 @@ describe("Test getHighestValueAndDate", function() {
     });
 });
 
-let desc1 = [
+const descendingTrend1 = [
     [1111, 10],
     [2222, 20],
     [3333, 30],
@@ -147,8 +140,7 @@ let desc1 = [
     [6666, 60],
     [7777, 70]
 ];
-
-let desc2 = [
+const descendingTrend2 = [
     [1111, 70],
     [2222, 60],
     [3333, 50],
@@ -157,8 +149,7 @@ let desc2 = [
     [6666, 20],
     [7777, 10]
 ];
-
-let desc3 = [
+const descendingTrend3 = [
     [1111, 10],
     [2222, 20],
     [3333, 30],
@@ -175,20 +166,17 @@ let desc3 = [
     [5000, 15],
     [6000, 15]
 ];
-
-let desc4 = [
+const descendingTrend4 = [
     [1111, 3],
     [2222, 2],
     [3333, 1]
 ];
-
-let desc5 = [
+const descendingTrend5 = [
     [1111, 3],
     [2222, 3],
     [3333, 1]
 ];
-
-let desc6 = [
+const descendingTrend6 = [
     [1111, 3],
     [2222, 3],
     [3333, 3]
@@ -196,22 +184,22 @@ let desc6 = [
 
 describe("Test getLongestBearishTrend", function() {
     it("Should return the number of longest downward sequence in array", function() {
-        let testLongestDownward = (getLongestBearishTrend(desc1));
+        let testLongestDownward = (getLongestBearishTrend(descendingTrend1));
         expect(testLongestDownward).to.equal(0);
-        testLongestDownward = (getLongestBearishTrend(desc2));
+        testLongestDownward = (getLongestBearishTrend(descendingTrend2));
         expect(testLongestDownward).to.equal(6);
-        testLongestDownward = (getLongestBearishTrend(desc3));
+        testLongestDownward = (getLongestBearishTrend(descendingTrend3));
         expect(testLongestDownward).to.equal(5);
-        testLongestDownward = (getLongestBearishTrend(desc4));
+        testLongestDownward = (getLongestBearishTrend(descendingTrend4));
         expect(testLongestDownward).to.equal(2);
-        testLongestDownward = (getLongestBearishTrend(desc5));
+        testLongestDownward = (getLongestBearishTrend(descendingTrend5));
         expect(testLongestDownward).to.equal(1);
-        testLongestDownward = (getLongestBearishTrend(desc6));
+        testLongestDownward = (getLongestBearishTrend(descendingTrend6));
         expect(testLongestDownward).to.equal(0);
     });
 });
 
-let unixTimes1 = [
+const unixTimes1 = [
     [1635725007402,53094.49707882135],  // midnight #1
     [1635728421286,53293.103479242556],
     [1635732570710,53071.52968895052],
@@ -234,8 +222,7 @@ let unixTimes1 = [
     [1636502544408,57914.295934630776], // midnight #6
     [1636588922306,56635.64786126113]   // midnight #7
 ];
-
-let unixTimes2 = [                      //               hh:mm                  
+const unixTimes2 = [                    //               hh:mm                  
     [1638835495083,44803.51872529366],  // midnight #1   00:04  start day
     [1638835717976,44875.84794667606],  //               00:08
     [1638836101902,44819.769976903284], //               00:15
@@ -244,8 +231,7 @@ let unixTimes2 = [                      //               hh:mm
     [1638921504009,44927.87083488738],  //               23:58
     [1638921857704,44903.4248759858]    // midnight #2   00:04  next day
 ];
-
-let unixTimes3 = [                      //               hh:mm                  
+const unixTimes3 = [                    //               hh:mm                  
     [1638921605000,44803.51872529366],  // midnight #1   00:00
     [1638921670000,44875.84794667606],  //               00:01
     [1638921730000,44819.769976903284], //               00:02
@@ -254,8 +240,7 @@ let unixTimes3 = [                      //               hh:mm
     [1639094830000,44927.87083488738],  // midnight #3   00:07  next day
     [1639181110000,44903.4248759858]    // midnight #4   00:05  next day
 ];
-
-let unixTimes4 = [                      //               hh:mm                  
+const unixTimes4 = [                    //               hh:mm                  
     [1638921605000,44803.51872529366],  // midnight #1   00:00
     [1639008070000,44871.71495765137],  // midnight #2   00:01  next day
     [1639094830000,44927.87083488738],  // midnight #3   00:07  next day
@@ -267,14 +252,20 @@ describe("Test getMidnight", function() {
         function() {
         let testMidnight = getMidnight(unixTimes1);
         expect(testMidnight.length).to.equal(7);
+
         for (let i = 0; i < testMidnight.length; i++) {
             let date = new Date(testMidnight[i][0]);
             let hour = date.getUTCHours();
             expect(hour).to.equal(0);
+
+            let dateLuxon = luxon.DateTime.fromMillis(testMidnight[i][0]).toUTC();
+            let hourLuxon = dateLuxon.hour;
+            expect(hourLuxon).to.equal(0);
         }
 
         testMidnight = getMidnight(unixTimes2);
         expect(testMidnight.length).to.equal(2);
+
         for (let i = 0; i < testMidnight.length - 1; i++) {
             let date = new Date(testMidnight[i][0]);
             let nextDate = new Date(testMidnight[i+1][0]);
@@ -282,16 +273,26 @@ describe("Test getMidnight", function() {
             let nextDay = nextDate.getUTCDate();
             let hour = date.getUTCHours();
             let nextHour = nextDate.getUTCHours();
-            
             expect(day).to.not.equal(nextDay);
             expect(hour).to.equal(0);
             expect(nextHour).to.equal(0);
+
+            let dateLuxon = luxon.DateTime.fromMillis(testMidnight[i][0]).toUTC();
+            let nextDateLuxon = luxon.DateTime.fromMillis(testMidnight[i+1][0]).toUTC();
+            let dayLuxon = dateLuxon.day;
+            let nextDayLuxon = nextDateLuxon.day;
+            let hourLuxon = dateLuxon.hour;
+            let nextHourLuxon = dateLuxon.hour;
+            expect(dayLuxon).to.not.equal(nextDayLuxon);
+            expect(hourLuxon).to.equal(0);
+            expect(nextHourLuxon).to.equal(0);
         }
 
         testMidnight = getMidnight(unixTimes3);
         expect(testMidnight.length).to.equal(4);
         expect(testMidnight[0][1]).to.equal(44803.51872529366);
         expect(testMidnight[3][1]).to.equal(44903.4248759858);
+
         for (let i = 0; i < testMidnight.length - 1; i++) {
             let date = new Date(testMidnight[i][0]);
             let nextDate = new Date(testMidnight[i+1][0]);
@@ -299,16 +300,26 @@ describe("Test getMidnight", function() {
             let nextDay = nextDate.getUTCDate();
             let hour = date.getUTCHours();
             let nextHour = nextDate.getUTCHours();
-            
             expect(day).to.not.equal(nextDay);
             expect(hour).to.equal(0);
             expect(nextHour).to.equal(0);
+
+            let dateLuxon = luxon.DateTime.fromMillis(testMidnight[i][0]).toUTC();
+            let nextDateLuxon = luxon.DateTime.fromMillis(testMidnight[i+1][0]).toUTC();
+            let dayLuxon = dateLuxon.day;
+            let nextDayLuxon = nextDateLuxon.day;
+            let hourLuxon = dateLuxon.hour;
+            let nextHourLuxon = dateLuxon.hour;
+            expect(dayLuxon).to.not.equal(nextDayLuxon);
+            expect(hourLuxon).to.equal(0);
+            expect(nextHourLuxon).to.equal(0);
         }
 
         testMidnight = getMidnight(unixTimes4);
         expect(testMidnight.length).to.equal(4);
         expect(testMidnight[0][1]).to.equal(44803.51872529366);
         expect(testMidnight[3][1]).to.equal(44903.4248759858);
+
         for (let i = 0; i < testMidnight.length - 1; i++) {
             let date = new Date(testMidnight[i][0]);
             let nextDate = new Date(testMidnight[i+1][0]);
@@ -316,10 +327,19 @@ describe("Test getMidnight", function() {
             let nextDay = nextDate.getUTCDate();
             let hour = date.getUTCHours();
             let nextHour = nextDate.getUTCHours();
-            
             expect(day).to.not.equal(nextDay);
             expect(hour).to.equal(0);
             expect(nextHour).to.equal(0);
+
+            let dateLuxon = luxon.DateTime.fromMillis(testMidnight[i][0]).toUTC();
+            let nextDateLuxon = luxon.DateTime.fromMillis(testMidnight[i+1][0]).toUTC();
+            let dayLuxon = dateLuxon.day;
+            let nextDayLuxon = nextDateLuxon.day;
+            let hourLuxon = dateLuxon.hour;
+            let nextHourLuxon = dateLuxon.hour;
+            expect(dayLuxon).to.not.equal(nextDayLuxon);
+            expect(hourLuxon).to.equal(0);
+            expect(nextHourLuxon).to.equal(0);
         }
     });
 });
