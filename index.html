@@ -17,8 +17,10 @@
         <div class="container">
             <h1>Crypto Reacher</h1>
             <h3><a href="https://www.coingecko.com/en/api">Powered by CoinGecko</a></h3>
-            <p>Choose your dates:</p>
             <table>
+                <tr>
+                    <td colspan="2" class="titleRow">Choose your dates (UTC):</td>
+                </tr>
                 <tr>
                     <td>Start date:</td>
                     <td><input type="date" id="startDate"></td>
@@ -49,46 +51,42 @@
             <table>
                 <tr>
                     <td><button type="button" class="execute" onclick="execute()">Execute</button></td>
-                    <td>
-                        <div id="executeError" class="outputElement"></div>
-                    </td>
+                    <td id="executeError" class="outputElement"></td>
                 </tr>
             </table>
         </div>
     </form>
     <div class="container">
-        <h3>The longest downward trend</h3>
         <table>
             <tr>
-                <td>
-                    <div id="longestBear" class="outputElement"></div>
-                </td>
+                <td class="titleRow">The longest downward trend:</td>
+            </tr>
+            <tr>
+                <td id="longestBear" class="outputElement"></td>
             </tr>
         </table>
-        <h3>The date and value of the highest trading volume</h3>
+        <br>
         <table>
             <tr>
-                <td>
-                    <div id="highestVolumeDate" class="outputElement"></div>
-                </td>
+                <td class="titleRow">The date and value of the highest trading volume:</td>
             </tr>
             <tr>
-                <td>
-                    <div id="highestVolume" class="outputElement resultRow"></div>
-                </td>
+                <td id="highestVolumeDate" class="outputElement"></td>
+            </tr>
+            <tr>
+                <td id="highestVolume" class="outputElement resultRow"></td>
             </tr>
         </table>
-        <h3>The best days for buying and selling cryptocurrency</h3>
+        <br>
         <table>
             <tr>
-                <td>
-                    <div id="bestDayToBuy" class="outputElement"></div>
-                </td>
+                <td class="titleRow">The best days for buying and selling cryptocurrency:</td>
             </tr>
             <tr>
-                <td>
-                    <div id="bestDayToSell" class="outputElement resultRow"></div>
-                </td>
+                <td id="bestDayToBuy" class="outputElement"></td>
+            </tr>
+            <tr>
+                <td id="bestDayToSell" class="outputElement resultRow"></td>
             </tr>
         </table>
     </div>
