@@ -3,9 +3,6 @@
  * within a given date range.
  */
 
- // eslint-disable-next-line no-undef
- const DateTime = luxon.DateTime;
-
 /**
  * This function executes the program when the 'Execute' button is clicked 
  * in index.html.
@@ -38,13 +35,13 @@ function execute() {
     clearHTMLElements("outputElement");
 
     const startDate = getUsersDate("startDate");
-    const endDate = getUsersDate("endDate");    
+    const endDate = getUsersDate("endDate");
     const isCorrect = checkUserInput(startDate, endDate);
 
     if (isCorrect == false) return;
 
     const crypto = getCurrency("crypto");
-    const fiat = "eur";      
+    const fiat = "eur";
     const url = createURL(crypto, fiat, startDate, endDate);
 
     fetch(url)
@@ -107,17 +104,23 @@ function execute() {
  * @param {string} id ID of the field from which the data is fetched.
  * @returns User input as unix timestamp(seconds).
  */
-function getUsersDate(id) {    
+function getUsersDate(id) {
+    // eslint-disable-next-line no-undef
+    const DateTime = luxon.DateTime;
     const input = document.getElementById(id).value;
     const timeUnits = input.split("-").map(Number);
-    const year = timeUnits[0]; const month = timeUnits[1]; const day = timeUnits[2];
+    const year = timeUnits[0];
+    const month = timeUnits[1];
+    const day = timeUnits[2];
     const date = DateTime.utc(year, month, day, 0, 0, 0, 0);
 
     if (id === "endDate") {
-        const endDate = date.plus({hours: 1}); // Add one hour to end date
+        const endDate = date.plus({
+            hours: 1
+        }); // Add one hour to end date
         return endDate.toUTC().toSeconds();
     }
-    
+
     return date.toUTC().toSeconds();
 }
 
@@ -158,9 +161,11 @@ function createURL(crypto, fiat, startDateUnix, endDateUnix) {
  * for each day and the value which is paired with each midnight timestamp,
  * such as crypto price or traded volume.
  * 
- * Array structure: a[[timestamp(ms), pair]]
+ * Array structure: a[ [timestamp(ms), pair] ]
  */
 function getMidnight(a) {
+    // eslint-disable-next-line no-undef
+    const DateTime = luxon.DateTime;
     const count = Object.keys(a).length;
 
     for (let i = count - 1; i >= 1; i--) {
@@ -274,22 +279,29 @@ function checkDescending(a) {
  * @returns The formatted sum.
  */
 function formatSum(locale, currency, sum) {
-    const formatter = new Intl.NumberFormat(locale, {
-            style: "currency",
-            currency: currency,
-        }
-    );
+    const options = {
+        style: "currency", 
+        currency: currency
+    };
+    const formatter = new Intl.NumberFormat(locale, options);
     return formatter.format(sum);
 }
 
 /**
- * Converts given unix timestamp (that is in milliseconds)
+ * Converts given unix timestamp (milliseconds)
  * to UTC time string in locale format.
  * @param {unix timestamp} unix Given date.
  * @returns Unix timestamp as formatted ISO string.
  */
 function formatDate(unix) {
-    const date = DateTime.fromMillis(unix).toUTC().toLocaleString();
+    // eslint-disable-next-line no-undef
+    const DateTime = luxon.DateTime;
+    const options = {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+    };
+    const date = DateTime.fromMillis(unix).toUTC().toLocaleString(options) + " UTC";
     return date;
 }
 
@@ -318,6 +330,8 @@ function clearHTMLElements(c) {
  * @param {date} endDate End date.
  */
 function checkUserInput(startDate, endDate) {
+    // eslint-disable-next-line no-undef
+    const DateTime = luxon.DateTime;
     const now = DateTime.utc();
     const startID = "startDate";
     const startErrorID = "startDateError";
@@ -356,7 +370,7 @@ function checkUserInput(startDate, endDate) {
         return false;
     }
 
-    if (endDate < 0 ) {
+    if (endDate < 0) {
         document.getElementById(endID).style.borderColor = color;
         document.getElementById(endErrorID).innerHTML = proper;
         return false;
