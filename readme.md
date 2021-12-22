@@ -2,7 +2,7 @@
 [Powered by CoinGecko](https://www.coingecko.com/en/api)<br />
 
 Crypto Reacher is a tool for analyzing bitcoin's market value for 
-a given date range.<br />
+a given date range. All dates are UTC+0.<br />
 Supports BTC & EUR and for now only bitcoin can be chosen from 
 the dropdown menu. However, it is possible to add more cryptos later
 if the need arises.<br />
