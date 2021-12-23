@@ -1,5 +1,5 @@
 * {
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;    
 }
 
 .container {
@@ -7,6 +7,11 @@
     margin-left: 2%;
     margin-right: 2%;
     width: fit-content;
+    min-width: 450px;
+}
+
+.dateTitle {
+    min-width: 75px;
 }
 
 .titleRow {
