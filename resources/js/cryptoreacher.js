@@ -326,85 +326,104 @@ function clearHTMLElements(c) {
  * Checks if user has provided proper dates for the program.
  * Incorrect date causes an error message and the program will
  * shut down, incorrect dates are either NaN or future dates.
- * @param {date} startDate Start date.
- * @param {date} endDate End date.
+ * @param {date} start Start date.
+ * @param {date} end End date.
  */
-function checkUserInput(startDate, endDate) {
+ function checkUserInput(start, end) {
     // eslint-disable-next-line no-undef
     const DateTime = luxon.DateTime;
-    const now = DateTime.utc();
+    const now = DateTime.now().toUTC();
+    const startDate = DateTime.fromSeconds(start).toUTC();
+    const endDate = DateTime.fromSeconds(end).toUTC();
     const startID = "startDate";
     const startErrorID = "startDateError";
     const endID = "endDate";
     const endErrorID = "endDateError";
     const proper = "Please enter a date.";
-    const future = "Can't search the future.";
-    const color = "red";
+    const options = {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+    };
+    const nowString = now.toUTC().toLocaleString(options);
+    const future = nowString + " is the current UTC date. " + 
+        "Can't search the future.";
 
     if (startDate.isValid === false || endDate.isValid === false) {
-        document.getElementById(startID).style.borderColor = color;
-        document.getElementById(endID).style.borderColor = color;
-        document.getElementById(startErrorID).innerHTML = proper;
-        document.getElementById(endErrorID).innerHTML = proper;
+        changeBorderColor([startID, endID], "red");
+        reportErrors([startErrorID, endErrorID], proper);
+        return false;
+    }
+
+    if (isNaN(startDate) || isNaN(endDate)) {
+        changeBorderColor([startID, endID], "red");
+        reportErrors([startErrorID, endErrorID], proper);
+        return false;
     }
 
     if (startDate < 0 && endDate < 0) {
-        document.getElementById(startID).style.borderColor = color;
-        document.getElementById(endID).style.borderColor = color;
-        document.getElementById(startErrorID).innerHTML = proper;
-        document.getElementById(endErrorID).innerHTML = proper;
+        changeBorderColor([startID, endID], "red");
+        reportErrors([startErrorID, endErrorID], proper);
         return false;
     }
 
     if (startDate > now && endDate > now) {
-        document.getElementById(startID).style.borderColor = color;
-        document.getElementById(endID).style.borderColor = color;
-        document.getElementById(startErrorID).innerHTML = future;
-        document.getElementById(endErrorID).innerHTML = future;
+        changeBorderColor([startID, endID], "red");
+        reportErrors([startErrorID, endErrorID], future);
         return false;
     }
 
     if (startDate < 0) {
-        document.getElementById(startID).style.borderColor = color;
-        document.getElementById(startErrorID).innerHTML = proper;
+        changeBorderColor([startID], "red");
+        reportErrors([startErrorID], proper);
         return false;
     }
 
     if (endDate < 0) {
-        document.getElementById(endID).style.borderColor = color;
-        document.getElementById(endErrorID).innerHTML = proper;
+        changeBorderColor([endID], "red");
+        reportErrors([endErrorID], proper);
         return false;
     }
 
     if (startDate > now) {
-        document.getElementById(startID).style.borderColor = color;
-        document.getElementById(startErrorID).innerHTML = future;
+        changeBorderColor([startID], "red");
+        reportErrors([startErrorID], future);
         return false;
     }
 
     if (endDate > now) {
-        document.getElementById(endID).style.borderColor = color;
-        document.getElementById(endErrorID).innerHTML = future;
-        return false;
-    }
-
-    if (startDate < 0 && endDate > now) {
-        document.getElementById(startID).style.borderColor = color;
-        document.getElementById(endID).style.borderColor = color;
-        document.getElementById(startErrorID).innerHTML = proper;
-        document.getElementById(endErrorID).innerHTML = future;
-        return false;
-    }
-
-    if (endDate < 0 && startDate > now) {
-        document.getElementById(startID).style.borderColor = color;
-        document.getElementById(endID).style.borderColor = color;
-        document.getElementById(startErrorID).innerHTML = future;
-        document.getElementById(endErrorID).innerHTML = future;
+        changeBorderColor([endID], "red");
+        reportErrors([endErrorID], future);
         return false;
     }
 
     return true;
+}
+
+/**
+ * Change border color of given HTML element.
+ * @param {array} a Array that contains element ids.
+ * @param {string} color Wanted color.
+ */
+function changeBorderColor(a, color) {
+
+    for (let i = 0; i < a.length; i++) {
+        let id = a[i];
+        document.getElementById(id).style.borderColor = color;
+    }
+}
+
+/**
+ * Show error message in given HTML element.
+ * @param {array} a Array that contains element ids.
+ * @param {string} msg Error message.
+ */
+function reportErrors(a, msg) {
+
+    for (let i = 0; i < a.length; i++) {
+        let id = a[i];
+        document.getElementById(id).innerHTML = msg;
+    }
 }
 
 /**
