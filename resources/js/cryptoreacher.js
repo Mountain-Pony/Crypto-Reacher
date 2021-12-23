@@ -43,7 +43,6 @@ function execute() {
     const crypto = getCurrency("crypto");
     const fiat = "eur";
     const url = createURL(crypto, fiat, startDate, endDate);
-    console.log(url);
 
     fetch(url)
         .then(function(response) {
@@ -78,7 +77,6 @@ function execute() {
                 const results = getHighestValueAndDate(midnightVolumes);
                 const highestVolumeDate = formatDate(results[0]);
                 const highestVolume = formatSum("en-EN", fiat, results[1]);
-                console.log(results[1]);
                 document.getElementById("highestVolumeDate").innerHTML = highestVolumeDate;
                 document.getElementById("highestVolume").innerHTML = highestVolume;
 
