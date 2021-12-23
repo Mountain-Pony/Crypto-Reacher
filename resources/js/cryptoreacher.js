@@ -55,16 +55,17 @@ function execute() {
             }
             response.json().then(function(data) {
                 // fetch json in data variable
+                const countPrice = Object.keys(data.prices).length;
+                const countVolume = Object.keys(data.total_volumes).length;
 
-                /* The longest bearish trend */
-                const midnightPrices = getMidnight(data.prices);
-
-                if (midnightPrices === false) {
-                    const err = "CoinGecko data request failed. No price data.";
+                if ( (countPrice < 1) || (countVolume < 1) ) {
+                    const err = "CoinGecko data request failed. No data.";
                     document.getElementById("executeError").innerHTML = err;
                     return;
                 }
 
+                /* The longest bearish trend */
+                const midnightPrices = getMidnight(data.prices);
                 const longestBear = getLongestBearishTrend(midnightPrices);
                 document.getElementById("longestBear").innerHTML = longestBear + " days.";
 
@@ -74,13 +75,6 @@ function execute() {
 
                 /* The highest trading volume */
                 const midnightVolumes = getMidnight(data.total_volumes);
-
-                if (midnightVolumes === false) {
-                    const err = "CoinGecko data request failed. No volume data.";
-                    document.getElementById("executeError").innerHTML = err;
-                    return;
-                }
-
                 const results = getHighestValueAndDate(midnightVolumes);
                 const highestVolumeDate = formatDate(results[0]);
                 const highestVolume = formatSum("en-EN", fiat, results[1]);
@@ -188,8 +182,6 @@ function getMidnight(a) {
     // eslint-disable-next-line no-undef
     const DateTime = luxon.DateTime;
     const count = Object.keys(a).length;
-
-    if (count < 1) return false;
 
     for (let i = count - 1; i >= 1; i--) {
         let time = DateTime.fromMillis(a[i][0]).toUTC();
@@ -372,28 +364,28 @@ function clearHTMLElements(c) {
     const nowString = now.toUTC().toLocaleString(options);
     const minString = minDate.toUTC().toLocaleString(options);
     const future = nowString + " is the current UTC date. Can't search the future.";
-    const past = "No crypto data earlier than " + minString;
+    const past = "No crypto data from earlier than " + minString;
     const later = "Start date is later than end date."
 
-    if (startDate.isValid === false || endDate.isValid === false) {
+    if ( (startDate.isValid === false) || (endDate.isValid === false) ) {
         changeBorderColor([startID, endID], "red");
         reportErrors([startErrorID, endErrorID], proper);
         return false;
     }
 
-    if (isNaN(startDate) || isNaN(endDate)) {
+    if ( (isNaN(startDate)) || (isNaN(endDate)) ) {
         changeBorderColor([startID, endID], "red");
         reportErrors([startErrorID, endErrorID], proper);
         return false;
     }
 
-    if (startDate < 0 && endDate < 0) {
+    if ( (startDate < 0) && (endDate < 0) ) {
         changeBorderColor([startID, endID], "red");
         reportErrors([startErrorID, endErrorID], proper);
         return false;
     }
 
-    if (startDate > now && endDate > now) {
+    if ( (startDate > now) && (endDate > now) ) {
         changeBorderColor([startID, endID], "red");
         reportErrors([startErrorID, endErrorID], future);
         return false;
@@ -447,7 +439,7 @@ function clearHTMLElements(c) {
 /**
  * Change border color of given HTML element.
  * @param {array} a Array that contains element ids.
- * @param {string} color Wanted color.
+ * @param {string} color Border color.
  */
 function changeBorderColor(a, color) {
 
