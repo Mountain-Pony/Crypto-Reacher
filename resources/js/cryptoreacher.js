@@ -38,11 +38,12 @@ function execute() {
     const endDate = getUsersDate("endDate");
     const isCorrect = checkUserInput(startDate, endDate);
 
-    if (isCorrect == false) return;
+    if (isCorrect === false) return;
 
     const crypto = getCurrency("crypto");
     const fiat = "eur";
     const url = createURL(crypto, fiat, startDate, endDate);
+    console.log(url);
 
     fetch(url)
         .then(function(response) {
@@ -57,25 +58,45 @@ function execute() {
 
                 /* The longest bearish trend */
                 const midnightPrices = getMidnight(data.prices);
+
+                if (midnightPrices === false) {
+                    const err = "CoinGecko data request failed. No price data.";
+                    document.getElementById("executeError").innerHTML = err;
+                    return;
+                }
+
                 const longestBear = getLongestBearishTrend(midnightPrices);
                 document.getElementById("longestBear").innerHTML = longestBear + " days.";
 
-                if (longestBear == 1) {
+                if (longestBear === 1) {
                     document.getElementById("longestBear").innerHTML = longestBear + " day.";
                 }
 
                 /* The highest trading volume */
                 const midnightVolumes = getMidnight(data.total_volumes);
+
+                if (midnightVolumes === false) {
+                    const err = "CoinGecko data request failed. No volume data.";
+                    document.getElementById("executeError").innerHTML = err;
+                    return;
+                }
+
                 const results = getHighestValueAndDate(midnightVolumes);
                 const highestVolumeDate = formatDate(results[0]);
                 const highestVolume = formatSum("en-EN", fiat, results[1]);
+                console.log(results[1]);
                 document.getElementById("highestVolumeDate").innerHTML = highestVolumeDate;
                 document.getElementById("highestVolume").innerHTML = highestVolume;
+
+                if (results[1] === 0) {
+                    document.getElementById("highestVolumeDate").innerHTML = ""
+                    document.getElementById("highestVolume").innerHTML = "No volume data.";
+                }
 
                 /* The best days for buying and selling */
                 const isDescending = checkDescending(midnightPrices);
 
-                if (isDescending == true) {
+                if (isDescending === true) {
                     document.getElementById("bestDayToBuy").innerHTML =
                         "The price only decreases in the given date range. " +
                         "It is not recommended to buy or sell on any of these dates.";
@@ -159,7 +180,7 @@ function createURL(crypto, fiat, startDateUnix, endDateUnix) {
  * @param {array} a Given array.
  * @returns Array that contains one timestamp (milliseconds) that is closest to midnight 
  * for each day and the value which is paired with each midnight timestamp,
- * such as crypto price or traded volume.
+ * such as crypto price or traded volume. Or false, if array a's lenght is < 1.
  * 
  * Array structure: a[ [timestamp(ms), pair] ]
  */
@@ -167,6 +188,8 @@ function getMidnight(a) {
     // eslint-disable-next-line no-undef
     const DateTime = luxon.DateTime;
     const count = Object.keys(a).length;
+
+    if (count < 1) return false;
 
     for (let i = count - 1; i >= 1; i--) {
         let time = DateTime.fromMillis(a[i][0]).toUTC();
@@ -335,6 +358,7 @@ function clearHTMLElements(c) {
     const now = DateTime.now().toUTC();
     const startDate = DateTime.fromSeconds(start).toUTC();
     const endDate = DateTime.fromSeconds(end).toUTC();
+    const minDate = DateTime.utc(2013, 4, 28, 0, 0, 0, 0); // Minimum date for bitcoin data
     const startID = "startDate";
     const startErrorID = "startDateError";
     const endID = "endDate";
@@ -346,7 +370,9 @@ function clearHTMLElements(c) {
         day: "2-digit"
     };
     const nowString = now.toUTC().toLocaleString(options);
+    const minString = minDate.toUTC().toLocaleString(options);
     const future = nowString + " is the current UTC date. Can't search the future.";
+    const past = "No crypto data earlier than " + minString;
     const later = "Start date is later than end date."
 
     if (startDate.isValid === false || endDate.isValid === false) {
@@ -400,6 +426,18 @@ function clearHTMLElements(c) {
     if (endDate > now) {
         changeBorderColor([endID], "red");
         reportErrors([endErrorID], future);
+        return false;
+    }
+
+    if (startDate < minDate) {
+        changeBorderColor([startID], "red");
+        reportErrors([startErrorID], past);
+        return false;
+    }
+
+    if (endDate < minDate) {
+        changeBorderColor([endID], "red");
+        reportErrors([endErrorID], past);
         return false;
     }
 
