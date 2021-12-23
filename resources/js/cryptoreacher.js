@@ -128,9 +128,7 @@ function getUsersDate(id) {
     const date = DateTime.utc(year, month, day, 0, 0, 0, 0);
 
     if (id === "endDate") {
-        const endDate = date.plus({
-            hours: 1
-        }); // Add one hour to end date
+        const endDate = date.plus({hours: 1}); // Add one hour to end date
         return endDate.toUTC().toSeconds();
     }
 
@@ -173,7 +171,6 @@ function createURL(crypto, fiat, startDateUnix, endDateUnix) {
  * @returns Array that contains one timestamp (milliseconds) that is closest to midnight 
  * for each day and the value which is paired with each midnight timestamp,
  * such as crypto price or traded volume. Or false, if array a's lenght is < 1.
- * 
  * Array structure: a[ [timestamp(ms), pair] ]
  */
 function getMidnight(a) {
@@ -249,7 +246,8 @@ function getHighestValueAndDate(a) {
  * Finds the lowest value and corresponding date
  * in the given array.
  * @param {array} a Given array.
- * @returns The lowest value and corresponding date in an array.
+ * @returns The lowest value and corresponding date in an array, 
+ * date in a[0] and the lowest value in a[1].
  */
 function getLowestValueAndDate(a) {
     let date = a[0][0];
@@ -352,8 +350,7 @@ function clearHTMLElements(c) {
     const startID = "startDate";
     const startErrorID = "startDateError";
     const endID = "endDate";
-    const endErrorID = "endDateError";
-    const proper = "Please enter a date.";
+    const endErrorID = "endDateError";    
     const options = {
         year: "numeric",
         month: "2-digit",
@@ -361,6 +358,7 @@ function clearHTMLElements(c) {
     };
     const nowString = now.toUTC().toLocaleString(options);
     const minString = minDate.toUTC().toLocaleString(options);
+    const proper = "Please enter a date.";
     const future = nowString + " is the current UTC date. Can't search the future.";
     const past = "No crypto data from earlier than " + minString;
     const later = "Start date is later than end date."
