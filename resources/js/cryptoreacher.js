@@ -346,8 +346,8 @@ function clearHTMLElements(c) {
         day: "2-digit"
     };
     const nowString = now.toUTC().toLocaleString(options);
-    const future = nowString + " is the current UTC date. " + 
-        "Can't search the future.";
+    const future = nowString + " is the current UTC date. Can't search the future.";
+    const later = "Start date is later than end date."
 
     if (startDate.isValid === false || endDate.isValid === false) {
         changeBorderColor([startID, endID], "red");
@@ -382,6 +382,12 @@ function clearHTMLElements(c) {
     if (endDate < 0) {
         changeBorderColor([endID], "red");
         reportErrors([endErrorID], proper);
+        return false;
+    }
+
+    if (startDate > endDate) {
+        changeBorderColor([startID], "red");
+        reportErrors([startErrorID], later);
         return false;
     }
 
